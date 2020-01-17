@@ -78,8 +78,11 @@ void max11200_start_conversion(uint8_t rate);
 /* check if conversion is ready */
 int32_t max11200_conversion_ready();
 
-/* read data register (coversion result */
+/* read data register (coversion result) */
 uint32_t max11200_read_data();
+
+/* read status register  */
+uint8_t max11200_read_stat();
 
 /* start cont conversion, the passed callback gets called each time a conversion is completed, uses interrupts */
 void max11200_start_continuous_conversion(uint8_t rate, void (*data_handler)(uint32_t data, uint8_t stat));
