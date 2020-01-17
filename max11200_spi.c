@@ -1,9 +1,31 @@
+/******************************************************************************
+MIT License
+
+Copyright (c) 2020 Andrea Nobile
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+******************************************************************************/
+
 #include "max11200_spi.h"
 #include "stm32f10x.h"
 #include "stm32f10x_it.h"
 #include <stdint.h>
-
-#include "profiling.h"
 
 
 #define SPI_MASTER                   SPI1
@@ -46,6 +68,7 @@
 #define MAX11200_CMD_CAL1      0x20
 #define MAX11200_CMD_CAL0      0x10
 
+static void (*driver_data_handler)(uint32_t data, uint8_t stat);
 
 uint32_t MAX11200_reg24b_read_spi(uint8_t reg)
 {
@@ -205,12 +228,9 @@ void MAX11200_start_continuous_conversion_spi(uint8_t rate)
 }
 
 
-void (*driver_data_handler)(uint32_t data, uint8_t stat);
-
 /* called by EXTI9_5_IRQHandler in stm32f10x_it.c  */
 static void cont_conv_data_ready_ith()
 {
-    profile_start(0);
     DISABLE_INTERRUPT_LINE(EXTI_Line6);
     uint32_t data = MAX11200_reg24b_read_spi(MAX11200_DATA_REG);
     uint8_t stat = MAX11200_reg_read_spi(MAX11200_STAT1_REG);
@@ -221,7 +241,6 @@ static void cont_conv_data_ready_ith()
 
     SPI_MASTER_NSS0();
     ENABLE_INTERRUPT_LINE(EXTI_Line6);
-    profile_stop(0);
 }
 
 
@@ -297,9 +316,6 @@ int32_t MAX11200_spi_init()
 
     /* set EXTI handler, called by EXTI9_5_IRQHandler in stm32f10x_it.c */
     exti6_handler = cont_conv_data_ready_ith;
-
-    profile_enable();
-    profile_init(0);
 
     return 0;
 }
