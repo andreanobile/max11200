@@ -6,7 +6,7 @@
 
 #define SYSTICK_INIT(frequency_hz) ((void) SysTick_Config (SystemCoreClock / (frequency_hz)))
 
-void adc_init()
+static void adc_init()
 {
     max11200_init();
 
