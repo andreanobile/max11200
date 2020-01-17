@@ -31,7 +31,7 @@ void adc_init()
 
 static void data_handler(uint32_t data, uint8_t stat)
 {
-    printf("read value %lu stat = 0x%02x\n", data, (uint32_t)stat);
+    printf("CC read value %lu stat = 0x%02x\n", data, (uint32_t)stat);
 }
 
 
@@ -47,7 +47,8 @@ int main(void)
         delay_ms(1000);
         max11200_immediate_power_down();
         uint32_t data = max11200_convert(MAX11200_SCYCLE_RATE_1SPS);
-        printf("read value %lu\n", data);
+        uint8_t stat = max11200_read_stat();
+        printf("SC read value %lu stat = 0x%02x\n", data, (uint32_t)stat);
         max11200_start_continuous_conversion(MAX11200_CONT_RATE_60SPS, data_handler);
     }
 
