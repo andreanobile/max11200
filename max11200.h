@@ -67,8 +67,9 @@ void max11200_write_config(max11200_config_data *config);
 /* initilize low level interface (spi) and driver state */
 int32_t max11200_init();
 
-
+/* adc self calibration */
 void max11200_self_calibration(uint32_t *calib_offset, uint32_t *calib_gain);
+
 /* convert and wait */
 uint32_t max11200_convert(uint8_t rate);
 
