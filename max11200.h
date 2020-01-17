@@ -64,7 +64,7 @@ void max11200_read_config(max11200_config_data *config);
 void max11200_write_config(max11200_config_data *config);
 
 
-/* initilize low level interface (spi) and driver state */
+/* initialize low level interface (spi) and driver state */
 int32_t max11200_init();
 
 /* adc self calibration */
